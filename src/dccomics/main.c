@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
 			/* COMPLETAR */
 			int song_c = discos[disc_id]->songs_count;
 			fprintf(output_file, "ESTADO DISCO %i\n", disc_id);
-			fprintf(output_file, "\t%i\n", song_c);
+			fprintf(output_file, "\t\t%i\n", song_c);
 
 			for (int i = 0; i < song_c; i++) {
 				if (discos[disc_id]->songs[i].rating > max_rating) {
