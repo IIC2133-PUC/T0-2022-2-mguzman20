@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
 				fscanf(input_file, "%i", &length);
 				fscanf(input_file, "%i", &rating);
 				discos[n_del_disco]->songs[i] = (Song){.id = i, .length = length, .rating = rating};
-				fprintf(output_file, "Cancion Agregada %i %i\n", i, n_del_disco);
+				fprintf(output_file, "CANCION AGREGADA %i %i\n", i, n_del_disco);
 			};
 			n_del_disco += 1;
 		}
