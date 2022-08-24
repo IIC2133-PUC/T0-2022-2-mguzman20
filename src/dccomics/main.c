@@ -123,12 +123,12 @@ int main(int argc, char **argv) {
 				};
 				total_length += discos[disc_id]->songs[i].length;
 			};
-			fprintf(output_file, "\t%i %i\n", max_rating, song_id_max);
-			fprintf(output_file, "\t%i %i\n", min_rating, min_song_id);
-			fprintf(output_file, "\t%i\n", total_length);
-			fprintf(output_file, "\tCANCIONES\n");
+			fprintf(output_file, "\t\t%i %i\n", max_rating, song_id_max);
+			fprintf(output_file, "\t\t%i %i\n", min_rating, min_song_id);
+			fprintf(output_file, "\t\t%i\n", total_length);
+			fprintf(output_file, "\t\tCANCIONES\n");
 			for (int i = 0; i < song_c; i++) {
-				fprintf(output_file, "\t\t%i\n", discos[disc_id]->songs[i].id);
+				fprintf(output_file, "\t\t\t\t%i\n", discos[disc_id]->songs[i].id);
 			};
 			fprintf(output_file, "FIN ESTADO\n");
 		}
@@ -139,8 +139,8 @@ int main(int argc, char **argv) {
 
 			/* COMPLETAR */
 			fprintf(output_file, "ESTADO CANCION %i\n", song_id);
-			fprintf(output_file, "\t%i\n", discos[disc_id]->songs[song_id].length);
-			fprintf(output_file, "\t%i\n", discos[disc_id]->songs[song_id].rating);
+			fprintf(output_file, "\t\t%i\n", discos[disc_id]->songs[song_id].length);
+			fprintf(output_file, "\t\t%i\n", discos[disc_id]->songs[song_id].rating);
 			fprintf(output_file, "FIN ESTADO\n");
 		}
 
