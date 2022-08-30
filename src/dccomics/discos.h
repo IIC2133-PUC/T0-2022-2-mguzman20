@@ -1,3 +1,7 @@
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #pragma once
 
 typedef struct song {
@@ -26,4 +30,5 @@ typedef struct batiplaylists {
 
 List* list_init(Song* song);
 void list_append(List* list, Song* song);
-void list_print(List* list);
+bool list_find(List *list, Song* song);
+void list_destroy(List* list);

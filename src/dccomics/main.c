@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
 			fscanf(input_file, "%d", &playlist_id);
 
 			/* COMPLETAR */
-			playlists[n_de_playlists] = malloc(sizeof(Batiplaylists*));
+			playlists[n_de_playlists] = malloc(sizeof(Batiplaylists));
 			*playlists[n_de_playlists] = (Batiplaylists){
 			    .id = playlist_id,
 				.songs_count = 0,
@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
 			};
 			List* list = playlist->first;
 
-			if (list == NULL || playlist->songs_count == 0) {
+			if (!list_find(list, discos[disc_id]->songs[song_id])) {
 				fprintf(output_file, "SONG NOT FOUND ON PLAYLIST\n");
 			}
 			else if (list->song->id == song_id && list->song->disc_id == disc_id){
@@ -207,7 +207,6 @@ int main(int argc, char **argv) {
 				fprintf(output_file, "ELIMINADO %i %i %i\n", song_id, disc_id, playlist_id);
 				playlist->songs_count -= 1;
 			}
-
 			else {
 			for (int i = 0; i<playlist->songs_count; i++) {
 				if (list->next->song->id == song_id && list->next->song->disc_id == disc_id){
@@ -216,10 +215,7 @@ int main(int argc, char **argv) {
 					playlist->songs_count -= 1;
 					break;
 				}
-				else if (list->next == NULL){
-					fprintf(output_file, "SONG NOT FOUND ON PLAYLIST\n");
-				};
-				list = list->next;
+				
 			};
 
 			};
@@ -231,16 +227,23 @@ int main(int argc, char **argv) {
 
 			/* COMPLETAR */
 			Batiplaylists* playlist;
+			int canciones_agregadas = 0;
+			Disco* disco = discos[disc_id];
 			for (int i = 0; i < n_de_playlists; i++) {
 				if (playlists[i]->id == playlist_id) {
 					playlist = playlists[i];
 				};
 			};
-			for (int i = 0; i < discos[disc_id]->songs_count; i++){
-				list_append(playlist->first, discos[disc_id]->songs[i]);
+			List* list = playlist->first;
+			for (int i = 0; i < disco->songs_count; i++){
+				if (!list_find(list, disco->songs[i])){
+					list_append(list, disco->songs[i]);
+					canciones_agregadas += 1;
+				};
+				
 			};
-			fprintf(output_file, "AGREGADO %i %i %i\n", discos[disc_id]->songs_count, disc_id, playlist_id);
-			playlist->songs_count += discos[disc_id]->songs_count;
+			fprintf(output_file, "AGREGADO %i %i %i\n", canciones_agregadas, disc_id, playlist_id);
+			playlist->songs_count += canciones_agregadas;
 		}
 
 		else if (string_equals(command, "PLAY-BATIPLAYLIST")) {
@@ -271,7 +274,7 @@ int main(int argc, char **argv) {
 			fscanf(input_file, "%d", &playlist_id);
 
 			/* COMPLETAR */
-			int rating = 0;
+			float rating = 0;
 			Batiplaylists* playlist;
 			for (int i = 0; i < n_de_playlists; i++) {
 				if (playlists[i]->id == playlist_id) {
@@ -284,7 +287,7 @@ int main(int argc, char **argv) {
 				song_list = song_list->next;
 			};
 			rating = rating/playlist->songs_count;
-			fprintf(output_file, "BATIPLAYLIST %i: %i",playlist_id, rating);
+			fprintf(output_file, "BATIPLAYLIST %i: %.2f",playlist_id, rating);
 
 		}
 
@@ -297,6 +300,15 @@ int main(int argc, char **argv) {
 			fscanf(input_file, "%d", &playlist_id);
 
 			/* COMPLETAR */
+			Batiplaylists* playlist;
+			for (int i = 0; i < n_de_playlists; i++) {
+				if (playlists[i]->id == playlist_id) {
+					playlist = playlists[i];
+				};
+			};
+			fprintf(output_file, "BATIPLAYLIST DELETED %i %i\n", playlist_id, playlist->songs_count);
+			list_destroy(playlist->first);
+			free(playlist);
 		}
 
 		else if (string_equals(command, "UNIR-BATIPLAYLIST")) {
@@ -304,6 +316,27 @@ int main(int argc, char **argv) {
 			fscanf(input_file, "%d %d", &playlist_id1, &playlist_id2);
 
 			/* COMPLETAR */
+			Batiplaylists* playlist1;
+			Batiplaylists* playlist2;
+			for (int i = 0; i < n_de_playlists; i++) {
+				if (playlists[i]->id == playlist_id1) {
+					playlist1 = playlists[i];
+				}
+				else if (playlists[i]->id == playlist_id2){
+					playlist2 = playlists[i];
+				};
+			};
+			List* list = playlist2 ->first;
+			for (int i = 0; i <playlist2->songs_count;i++){
+				Song* song = list->song;
+				if(!list_find(playlist1->first, song)){
+					list_append(playlist1->first, song);
+				};
+				list = list->next;
+			};
+			list_destroy(playlist2->first);
+			free(playlist2);
+			fprintf(output_file, "JOINED %i and %i\n", playlist_id1, playlist_id2);
 		}
 
 		else if (string_equals(command, "SPLIT-BATIPLAYLIST")) {
@@ -311,6 +344,29 @@ int main(int argc, char **argv) {
 			fscanf(input_file, "%d %d %d", &playlist_id, &new_playlist_id, &position);
 
 			/* COMPLETAR */
+			Batiplaylists* playlist;
+			for (int i = 0; i < n_de_playlists; i++) {
+				if (playlists[i]->id == playlist_id) {
+					playlist = playlists[i];
+				};
+			};
+
+			List* nodo = playlist->first;
+			for (int i = 0; i <position;i++)
+			{
+				nodo = nodo->next;
+			}
+
+			playlists[n_de_playlists] = malloc(sizeof(Batiplaylists));
+			*playlists[n_de_playlists] = (Batiplaylists){
+			    .id = new_playlist_id,
+				.songs_count = playlist->songs_count - position,
+			    .first = nodo->next};
+			n_de_playlists += 1;
+
+			nodo->next = NULL;
+			playlist->songs_count = position;
+			
 		}
 
 		else if (string_equals(command, "ORDENAR-BATIPLAYLIST")) {
@@ -321,10 +377,32 @@ int main(int argc, char **argv) {
 		}
 
 		else if (string_equals(command, "PURGAR-BATIPLAYLIST")) {
-			int playlist_id, rating;
-			fscanf(input_file, "%d %d", &playlist_id, &rating);
+			int playlist_id, m_rating;
+			fscanf(input_file, "%d %d", &playlist_id, &m_rating);
 
 			/* COMPLETAR */
+			Batiplaylists* playlist;
+			int songs_purged = 0;
+			for (int i = 0; i < n_de_playlists; i++) {
+				if (playlists[i]->id == playlist_id) {
+					playlist = playlists[i];
+				};
+			};
+			List* list = playlist->first;
+			if (list->song->rating < m_rating){
+				playlist->first = list->next;
+				songs_purged += 1;
+			};
+			for (int i = 0; i <playlist->songs_count; i++){
+				if (list->next == NULL){
+					break;
+				}
+				else if (list->next->song->rating < m_rating){
+					list->next = list->next->next;
+					songs_purged += 1;
+				};
+			}
+			fprintf(output_file, "BATIPLAYLIST PURGED %i %i", playlist_id, songs_purged);
 		}
 
 		/* Leemos la siguiente instrucción */
@@ -343,16 +421,30 @@ int main(int argc, char **argv) {
 	///////////////////////////////////
 
 	/* COMPLETAR */
+	for (int i = 0; i <N_BATIPLAYLISTS+1;i++){
+		if (playlists[i]->first != NULL){
+			list_destroy(playlists[i]->first);
+		};
+		if (playlists[i]){
+			free(playlists[i]);
+		};
+	};
+	free(playlists);
+
 	for (int i = 0; i < N_DISCS; i++) {
+		for (int j = 0; discos[i]->songs_count; j++){
+			if (discos[i]->songs[j]){
+				free(discos[i]->songs[j]);
+			}
+			
+			
+		};
 		free(discos[i]->songs);
 		free(discos[i]);
 	};
 	free(discos);
 
-	for (int i = 0; i <N_BATIPLAYLISTS;i++){
-		free(playlists[i]);
-	};
-	free(playlists);
+	
 
 	return 0;
 }
