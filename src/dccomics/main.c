@@ -212,7 +212,7 @@ int main(int argc, char **argv) {
 			else {
 				while (list->next){
 					if (discos[disc_id]->songs[song_id] == list->next->song){
-						List* list_e = list->next
+						List* list_e = list->next;
 						list->next = list->next->next;
 						free(list_e);
 						playlist->songs_count -= 1;
