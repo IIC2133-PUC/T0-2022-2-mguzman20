@@ -265,10 +265,10 @@ int main(int argc, char **argv) {
 			};
 			List* song_list = playlist->first;
 			fprintf(output_file, "ESTADO BATIPLAYLIST %i\n", playlist->id);
-			fprintf(output_file, "\t\t%i\n", playlist->songs_count);
-			fprintf(output_file, "\t\tCANCIONES\n");
+			fprintf(output_file, "\t%i\n", playlist->songs_count);
+			fprintf(output_file, "\tCANCIONES\n");
 			for (int i = 0; i < playlist->songs_count; i++){
-				fprintf(output_file, "\t\t\t\t%i %i\n", song_list->song->id, song_list->song->disc_id);
+				fprintf(output_file, "\t\t%i %i\n", song_list->song->id, song_list->song->disc_id);
 				song_list = song_list->next;
 			};
 			fprintf(output_file, "FIN ESTADO\n");
