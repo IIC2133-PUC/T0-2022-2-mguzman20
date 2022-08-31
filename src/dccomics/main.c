@@ -151,7 +151,7 @@ int main(int argc, char **argv) {
 			    .id = playlist_id,
 				.songs_count = 0,
 			    .first = NULL};
-			fprintf(output_file, "BAIPLAYLIST CREATED %i\n", playlists[n_de_playlists]->id);
+			fprintf(output_file, "BATIPLAYLIST CREATED %i\n", playlists[n_de_playlists]->id);
 			n_de_playlists += 1;
 		}
 
@@ -293,7 +293,7 @@ int main(int argc, char **argv) {
 				song_list = song_list->next;
 			};
 			rating = rating/playlist->songs_count;
-			fprintf(output_file, "BATIPLAYLIST %i: %.2f",playlist_id, rating);
+			fprintf(output_file, "BATIPLAYLIST %i: %.2f\n",playlist_id, rating);
 
 		}
 
