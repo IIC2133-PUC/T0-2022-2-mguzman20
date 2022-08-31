@@ -198,28 +198,32 @@ int main(int argc, char **argv) {
 				};
 			};
 			List* list = playlist->first;
-
-			if (!list_find(list, discos[disc_id]->songs[song_id])) {
+			
+			
+			if (!list_find(list, discos[disc_id]->songs[song_id])|| list == NULL){
 				fprintf(output_file, "SONG NOT FOUND ON PLAYLIST\n");
 			}
-			else if (list->song->id == song_id && list->song->disc_id == disc_id){
-				playlist -> first = list->next;
-				fprintf(output_file, "ELIMINADO %i %i %i\n", song_id, disc_id, playlist_id);
+
+			else if (list->song == discos[disc_id]->songs[song_id]){
+				playlist->first = list->next;
 				playlist->songs_count -= 1;
+				fprintf(output_file, "ELIMINADO %i %i %i\n", song_id, disc_id, playlist_id);
 			}
 			else {
-			for (int i = 0; i<playlist->songs_count; i++) {
-				if (list->next->song->id == song_id && list->next->song->disc_id == disc_id){
-					list->next = list->next->next;
-					fprintf(output_file, "ELIMINADO %i %i %i\n", song_id, disc_id, playlist_id);
-					playlist->songs_count -= 1;
-					break;
-				}
-				
-			};
-
+				while (list->next){
+					if (discos[disc_id]->songs[song_id] == list->next->song){
+						List* list_e = list->next
+						list->next = list->next->next;
+						free(list_e);
+						playlist->songs_count -= 1;
+						fprintf(output_file, "ELIMINADO %i %i %i\n", song_id, disc_id, playlist_id);
+					};
+					list = list->next;
+				};
 			};
 		}
+
+			
 
 		else if (string_equals(command, "AGREGAR-DISCO-BATIPLAYLIST")) {
 			int playlist_id, disc_id;
