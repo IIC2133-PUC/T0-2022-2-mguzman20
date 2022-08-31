@@ -235,8 +235,14 @@ int main(int argc, char **argv) {
 				};
 			};
 			List* list = playlist->first;
+		
 			for (int i = 0; i < disco->songs_count; i++){
-				if (!list_find(list, disco->songs[i])){
+				if (list == NULL){
+					list = list_init(disco->songs[i]);
+					playlist->first = list;
+					canciones_agregadas += 1;
+				}
+				else if (!list_find(list, disco->songs[i])){
 					list_append(list, disco->songs[i]);
 					canciones_agregadas += 1;
 				};
@@ -412,7 +418,6 @@ int main(int argc, char **argv) {
 	/////////////////////////////////////
 	//        Cerramos archivos        //
 	////////////////////////////////////
-
 	fclose(input_file);
 	fclose(output_file);
 
@@ -421,30 +426,32 @@ int main(int argc, char **argv) {
 	///////////////////////////////////
 
 	/* COMPLETAR */
-	for (int i = 0; i <N_BATIPLAYLISTS+1;i++){
-		if (playlists[i]->first != NULL){
-			list_destroy(playlists[i]->first);
-		};
-		if (playlists[i]){
-			free(playlists[i]);
-		};
-	};
-	free(playlists);
-
+	
 	for (int i = 0; i < N_DISCS; i++) {
-		for (int j = 0; discos[i]->songs_count; j++){
-			if (discos[i]->songs[j]){
+		if(discos[i] != 0) {
+			for (int j = 0; j < discos[i]->songs_count; j+=1){
 				free(discos[i]->songs[j]);
-			}
-			
-			
+			};
+			free(discos[i]->songs);
+			free(discos[i]);
 		};
-		free(discos[i]->songs);
-		free(discos[i]);
+		
 	};
 	free(discos);
 
-	
+	for (int i = 0; i <N_BATIPLAYLISTS;i++){
+		if (playlists[i] != 0)
+		{
+			if (playlists[i]->first != NULL){
+				list_destroy(playlists[i]->first);
+			};
+			free(playlists[i]);
+		}
+		
+		
+	};
+	free(playlists);
+
 
 	return 0;
 }

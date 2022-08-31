@@ -16,7 +16,7 @@ List* list_init(Song* song){
 
 void list_append(List* list, Song* song){
 	List *last = list;
-	while (last -> next){
+	while (last -> next != NULL){
 		last = last -> next;
 	};
 	List *new_list = list_init(song);
