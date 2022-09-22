@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
 			int song_c = discos[disc_id]->songs_count;
 			Disco* disc = discos[disc_id];
 			fprintf(output_file, "ESTADO DISCO %i\n", disc_id);
-			fprintf(output_file, "\t\t%i\n", song_c);
+			fprintf(output_file, "\t%i\n", song_c);
 
 			for (int i = 0; i < song_c; i++) {
 				if (disc->songs[i]->rating > max_rating) {
@@ -113,12 +113,12 @@ int main(int argc, char **argv) {
 				total_length += disc->songs[i]->length;
 			};
 
-			fprintf(output_file, "\t\t%i %i\n", max_rating, song_id_max);
-			fprintf(output_file, "\t\t%i %i\n", min_rating, min_song_id);
-			fprintf(output_file, "\t\t%i\n", total_length);
-			fprintf(output_file, "\t\tCANCIONES\n");
+			fprintf(output_file, "\t%i %i\n", max_rating, song_id_max);
+			fprintf(output_file, "\t%i %i\n", min_rating, min_song_id);
+			fprintf(output_file, "\t%i\n", total_length);
+			fprintf(output_file, "\tCANCIONES\n");
 			for (int i = 0; i < song_c; i++) {
-				fprintf(output_file, "\t\t\t\t%i\n", disc->songs[i]->id);
+				fprintf(output_file, "\t\t%i\n", disc->songs[i]->id);
 			};
 			fprintf(output_file, "FIN ESTADO\n");
 		}
@@ -130,8 +130,8 @@ int main(int argc, char **argv) {
 
 			/* COMPLETAR */
 			fprintf(output_file, "ESTADO CANCION %i\n", song_id);
-			fprintf(output_file, "\t\t%i\n", discos[disc_id]->songs[song_id]->length);
-			fprintf(output_file, "\t\t%i\n", discos[disc_id]->songs[song_id]->rating);
+			fprintf(output_file, "\t%i\n", discos[disc_id]->songs[song_id]->length);
+			fprintf(output_file, "\t%i\n", discos[disc_id]->songs[song_id]->rating);
 			fprintf(output_file, "FIN ESTADO\n");
 		}
 
@@ -337,14 +337,16 @@ int main(int argc, char **argv) {
 				if(playlists[i]!= 0) {
 					if (playlists[i]->id == playlist_id) {
 						playlist = playlists[i];
+						x = i;
 						break;
 					};
 				};
 			};
 			fprintf(output_file, "BATIPLAYLIST DELETED %i %i\n", playlist_id, playlist->songs_count);
-			list_destroy(playlist->first);
-			free(playlist);
-			playlists[x] = 0;
+			if (playlists[x]->first != NULL){
+				list_destroy(playlists[x]->first);
+			};
+			memset(playlists[x], 0, sizeof(Batiplaylists));
 		}
 
 		else if (string_equals(command, "UNIR-BATIPLAYLIST")) {
@@ -375,14 +377,11 @@ int main(int argc, char **argv) {
 				};
 				list = list->next;
 			};
-			if (playlists[x] != 0)
-			{
-				if (playlists[x]->first != NULL){
-					list_destroy(playlists[x]->first);
-				};
-				free(playlists[x]);
+			
+			if (playlists[x]->first != NULL){
+				list_destroy(playlists[x]->first);
 			};
-			playlists[x] = 0;
+			memset(playlists[x], 0, sizeof(Batiplaylists));
 			fprintf(output_file, "JOINED %i AND %i\n", playlist_id1, playlist_id2);
 		}
 
